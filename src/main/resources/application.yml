@@ -5,8 +5,11 @@ spring:
     username: root
     password: mymysql
     driver-class-name: com.mysql.cj.jdbc.Driver
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
-# using generated security password 뜨지 않도록 비밀번호 부여
+  # using generated security password 뜨지 않도록 비밀번호 부여
   security:
     user:
       password: 1111
