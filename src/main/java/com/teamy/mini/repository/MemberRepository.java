@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.transaction.Transactional;
 
+@Transactional //양 추가
 @Repository
 public class MemberRepository {
     private EntityManager em;
