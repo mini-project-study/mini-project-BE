@@ -38,7 +38,7 @@ public class TestController {
             @ApiResponse(responseCode = "404", description = "페이지 없다"),
             @ApiResponse(responseCode = "500", description = "서버가 뭔가 잘못했다")
     })
-    @PostMapping("test")
+    @GetMapping("test")
     public Member test(@RequestParam String email, @RequestParam String nickname, @RequestParam String password) {
         Member member = new Member(email, nickname, password);
         memberService.registerMember(member);
