@@ -22,3 +22,9 @@ spring:
   security:
     user:
       password: 1111
+
+  jwt:
+    header: Authorization
+    # secret: bWluaS1wcm9qZWN0LXRlYW15LXllYW5hLWRheWVh
+    access-token-validity-in-seconds: 60
+    refresh-token-validity-in-seconds: 60
