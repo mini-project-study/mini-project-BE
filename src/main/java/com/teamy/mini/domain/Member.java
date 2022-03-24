@@ -19,7 +19,7 @@ public class Member {
     @Column(name = "nickname", nullable = false, length = 45)
     private String nickname;
 
-    @Column(name = "password", nullable = false, length = 12)
+    @Column(name = "password", nullable = false, length = 60)
     private String password;
 
     public Member(String email, String nickname, String password) {

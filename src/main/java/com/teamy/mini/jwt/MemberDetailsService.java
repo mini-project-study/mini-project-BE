@@ -1,8 +1,15 @@
 package com.teamy.mini.jwt;
 
+import com.teamy.mini.domain.JwtToken;
 import com.teamy.mini.domain.Member;
+import com.teamy.mini.domain.ResponseMessage;
+import com.teamy.mini.error.ErrorCode;
 import com.teamy.mini.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -11,9 +18,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.ServletRequest;
+import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 
 
@@ -31,10 +39,11 @@ public class MemberDetailsService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberRepository.findByEmail(username);
-        log.info("member : {}", member);
+
+
+        //id 없을 때
         if(member == null) {
-            log.info("member is null");
-            throw new UsernameNotFoundException("UsernameNotFoundException, member == null");
+            throw new UsernameNotFoundException("UsernameNotFoundException");
         }
 
         log.info(" member : " + member.getEmail() + " " + member.getNickname() + " " + member.getPassword());

@@ -1,6 +1,5 @@
 package com.teamy.mini.jwt;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -8,7 +7,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -20,19 +18,15 @@ import java.util.Arrays;
 @EnableWebSecurity //Spring security filter를 스프링 필터 체인에 등록
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public SecurityConfig(JwtAuthenticationProvider jwtAuthenticationProvider, JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint, JwtAccessDeniedHandler jwtAccessDeniedHandler) {
+        this.jwtAuthenticationProvider = jwtAuthenticationProvider;
         this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
         this.jwtAccessDeniedHandler = jwtAccessDeniedHandler;
     }
-
-    @Autowired
-    private JwtFilter jwtFilter;
-
 
     @Bean
     public BCryptPasswordEncoder encodePwd() {
@@ -54,12 +48,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 authenticationEntryPoint(jwtAuthenticationEntryPoint).
                 accessDeniedHandler(jwtAccessDeniedHandler).
                 and().
-                apply(new JwtSecurityConfig(jwtTokenProvider));
+                apply(new JwtSecurityConfig(jwtAuthenticationProvider));
 
 
 
         http.authorizeHttpRequests()
-                .antMatchers("/authenticate", "/join").permitAll()
+                //.antMatchers("/login", "/join", "/hello").permitAll();
+                .antMatchers("/login", "/join").permitAll()
                 .antMatchers("/hello").authenticated(); //로그인한 사용자만 들어갈 수 있게
     }
 

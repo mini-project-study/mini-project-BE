@@ -3,8 +3,9 @@ package com.teamy.mini.controller;
 import com.teamy.mini.domain.JwtToken;
 import com.teamy.mini.domain.LoginInfo;
 import com.teamy.mini.domain.Member;
+import com.teamy.mini.domain.ResponseMessage;
 import com.teamy.mini.jwt.JwtFilter;
-import com.teamy.mini.jwt.JwtTokenProvider;
+import com.teamy.mini.jwt.JwtAuthenticationProvider;
 import com.teamy.mini.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -26,12 +27,12 @@ public class TestController {
 
     private BCryptPasswordEncoder bCryptPasswordEncoder;
     private MemberService memberService;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    public TestController(BCryptPasswordEncoder bCryptPasswordEncoder, MemberService memberService, JwtTokenProvider jwtTokenProvider, AuthenticationManagerBuilder authenticationManagerBuilder){
+    public TestController(BCryptPasswordEncoder bCryptPasswordEncoder, MemberService memberService, JwtAuthenticationProvider jwtAuthenticationProvider, AuthenticationManagerBuilder authenticationManagerBuilder){
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.jwtTokenProvider = jwtTokenProvider;
+        this.jwtAuthenticationProvider = jwtAuthenticationProvider;
         this.authenticationManagerBuilder = authenticationManagerBuilder;
         this.memberService = memberService;
     }
@@ -63,24 +64,28 @@ public class TestController {
         return member;
     }
 
-    @PostMapping("/authenticate")
-    public ResponseEntity<JwtToken> authorize(@RequestBody LoginInfo loginInfo) {
+    @GetMapping("loginFail")
+    public ResponseEntity<ResponseMessage> loginFail(){
+        return new ResponseEntity<>(new ResponseMessage(false, "아이디 혹은 비밀번호를 확인해주세요.", "유저 정보 조회 결과 없음", null), HttpStatus.BAD_REQUEST);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ResponseMessage> authorize(@RequestBody LoginInfo loginInfo) {
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginInfo.getEmail(), loginInfo.getPassword());
 
-        log.info("/authenticate -> 입력된 email : {} ", authenticationToken.getName());
-        //findByEmail은 안 써? 뭘로 인증하는 거임
+        log.info("/login -> 입력된 email : {} ", authenticationToken.getName());
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         log.info("인증된 사용자 email " + SecurityContextHolder.getContext().getAuthentication().getName());
 
-        String jwt = jwtTokenProvider.createAccessToken(authentication);
+        String jwt = jwtAuthenticationProvider.createAccessToken(authentication);
         log.info("jwt : {} ", jwt);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add(JwtFilter.AUTHORIZTION_HADER, "Bearer " + jwt);
 
-        return new ResponseEntity<>(new JwtToken(jwt, jwt), httpHeaders, HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseMessage(true, "로그인 성공", "", new JwtToken(jwt, jwt)), httpHeaders, HttpStatus.OK);
     }
 
 }

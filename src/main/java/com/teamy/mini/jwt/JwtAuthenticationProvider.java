@@ -1,5 +1,6 @@
 package com.teamy.mini.jwt;
 
+import com.teamy.mini.error.ErrorCode;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,15 +9,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 
+import javax.servlet.ServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
 @Component
-public class JwtTokenProvider {
+public class JwtAuthenticationProvider {
 
     //나중에 수정 필요
     private static String secret = Base64.getEncoder().encodeToString("bWluaS1wcm9qZWN0LXRlYW15LXllYW5hLWRheWVh".getBytes());
@@ -24,7 +27,7 @@ public class JwtTokenProvider {
     private final Long refreshTokenValidate;
     private static final String AUTHORITIES_KEY = "auth";
 
-    public JwtTokenProvider(/*@Value("${jwt.secret}") String secret,*/
+    public JwtAuthenticationProvider(/*@Value("${jwt.secret}") String secret,*/
                             /*@Value("${jwt.access-token-validity-in-seconds}") Long accessTokenValidate,
                             @Value("${jwt.refresh-token-validity-in-seconds}") Long refreshTokenValidate*/
     @Value("86400") Long accessTokenValidate, @Value("1209600") Long refreshTokenValidate) {
@@ -76,19 +79,25 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
 
-    public boolean validateToken(String token) {
+    public boolean validateToken(String token, ServletRequest request) {
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
-        } catch (io.jsonwebtoken.security.SignatureException | MalformedJwtException e) {
+        } catch (SignatureException | MalformedJwtException e) { //io.jsonwebtoken.security.SignatureException
             log.info("잘못된 JWT 서명");
+            request.setAttribute("Exception", ErrorCode.TOKEN_MALFORMED_JWT);
         } catch (ExpiredJwtException e) {
             log.info("만료된 JWT 토큰");
+            request.setAttribute("Exception", ErrorCode.TOKEN_EXPIRED_JWT);
         } catch (UnsupportedJwtException e) {
             log.info("지원되지 않는 JWT 토큰");
+            request.setAttribute("Exception", ErrorCode.TOKEN_UNSUPPORTED_JWT);
         } catch (IllegalArgumentException e) {
             log.info("JWT 토큰이 잘못됨");
+            request.setAttribute("Exception", ErrorCode.TOKEN_ILLEGAL_JWT);
         }
+
+
         return false;
     }
 
