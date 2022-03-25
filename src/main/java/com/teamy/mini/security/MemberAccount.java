@@ -1,4 +1,4 @@
-package com.teamy.mini.jwt;
+package com.teamy.mini.security;
 
 import com.teamy.mini.domain.Member;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,13 +1,12 @@
-package com.teamy.mini.jwt;
+package com.teamy.mini.security;
 
+import com.teamy.mini.jwt.JwtAccessDeniedHandler;
+import com.teamy.mini.jwt.JwtAuthenticationEntryPoint;
+import com.teamy.mini.jwt.JwtAuthenticationProvider;
+import com.teamy.mini.jwt.JwtSecurityConfig;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -91,7 +90,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("*"));
+        configuration.setAllowedOriginPatterns(Arrays.asList("*")); //프론트와 연결 테스트 실패 : Spring Boot에서 CORS 설정 시 .allowCredentials(true)와 .allowedOrigins("*")를 동시에 사용할 수 없도록 업데이트 됨 > .allowedOrigins("*") -> .allowed/originPatterns("*")로 변경하여 해결
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setAllowCredentials(true);

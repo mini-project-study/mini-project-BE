@@ -5,7 +5,7 @@ import com.teamy.mini.domain.Member;
 import com.teamy.mini.domain.ResponseMessage;
 import com.teamy.mini.jwt.JwtFilter;
 import com.teamy.mini.jwt.JwtAuthenticationProvider;
-import com.teamy.mini.jwt.MemberAccount;
+import com.teamy.mini.security.MemberAccount;
 import com.teamy.mini.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
