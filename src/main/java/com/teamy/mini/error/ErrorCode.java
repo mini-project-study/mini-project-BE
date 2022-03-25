@@ -9,10 +9,12 @@ public enum ErrorCode {
     INQUIRY_NO_RESULT(400,"There is No inquiry result"),
     METHOD_NOT_ALLOWED(405,  "Method Not Allowed"),
     HANDLE_ACCESS_DENIED(403, "Access is Denied"),
-    TOKEN_MALFORMED_JWT(400, "토큰 시그니쳐에 문제가 있음"),
-    TOKEN_EXPIRED_JWT(400, "만료된 토큰"),
-    TOKEN_UNSUPPORTED_JWT(400, "지원하지 않는 토큰"),
-    TOKEN_ILLEGAL_JWT(400, "JWT 토큰이 잘못됨");
+    TOKEN_MALFORMED_JWT(401, "토큰 시그니쳐에 문제가 있음"),
+    TOKEN_EXPIRED_JWT(401, "만료된 토큰"),
+    TOKEN_UNSUPPORTED_JWT(401, "지원하지 않는 토큰"),
+    TOKEN_ILLEGAL_JWT(401, "JWT 토큰이 잘못됨"),
+    TOKEN_NOT_FOUND(401, "토큰이 없음"),
+    LOGIN_INFO_NOT_FOUND(400, "유저 정보 없음");
 
     private int statusCode;
     private final String message;

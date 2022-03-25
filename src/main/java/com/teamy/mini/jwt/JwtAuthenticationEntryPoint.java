@@ -1,9 +1,12 @@
 package com.teamy.mini.jwt;
 
 import com.teamy.mini.error.ErrorCode;
+import com.teamy.mini.repository.MemberRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
@@ -21,24 +24,40 @@ import java.io.IOException;
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
+    private MemberRepository memberRepository;
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         // 유효한 자격증명 제공x -> 401
         log.info("유효한 자격증명 제공x -> 401");
+
+
         log.info("authException : {}", authException.getLocalizedMessage());
         log.info("authException : {}", authException.getMessage());
 
-        //response.sendRedirect("/loginFail");
+        if(authException instanceof BadCredentialsException) {
+            log.info("bad");
+            request.setAttribute("Exception", ErrorCode.LOGIN_INFO_NOT_FOUND);
+        } /*else if(authException instanceof UsernameNotFoundException) {
+            log.info("usernamenot");
+            request.setAttribute("Exception", ErrorCode.LOGIN_INFO_NOT_FOUND);
+        }*/
+
+            //response.sendRedirect("/loginFail");
 
         ErrorCode errorCode = (ErrorCode) request.getAttribute("Exception");
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         JSONObject responseJson = new JSONObject();
+        responseJson.put("success", false);
         responseJson.put("message", errorCode.getMessage());
-        responseJson.put("code", errorCode.getStatusCode());
+        responseJson.put("error", errorCode.getMessage());
+        responseJson.put("data", null);
 
+        response.setStatus(errorCode.getStatusCode());
         response.getWriter().print(responseJson);
+    }
 //        switch(errorCode){
 //            case TOKEN_MALFORMED_JWT:
 //                request.
@@ -49,6 +68,5 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 //                break;
 //        }
 
-    }
 
 }

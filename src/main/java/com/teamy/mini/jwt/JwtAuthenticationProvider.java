@@ -3,18 +3,21 @@ package com.teamy.mini.jwt;
 import com.teamy.mini.error.ErrorCode;
 import io.jsonwebtoken.*;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
-
 import javax.servlet.ServletRequest;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -63,6 +66,7 @@ public class JwtAuthenticationProvider {
 //    }
 
     public Authentication getAuthentication(String token) {
+        log.info("getAuthentication : token 사용한 사용자 정보 조회");
         Claims claims = Jwts
                 .parser().setSigningKey(secret)
                 .parseClaimsJws(token)

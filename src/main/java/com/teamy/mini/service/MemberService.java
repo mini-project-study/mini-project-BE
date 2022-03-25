@@ -1,6 +1,8 @@
 package com.teamy.mini.service;
 
+import com.teamy.mini.domain.LoginInfo;
 import com.teamy.mini.domain.Member;
+import com.teamy.mini.error.customException.InquiryException;
 import com.teamy.mini.repository.MemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,11 @@ public class MemberService {
     public Member registerMember(Member member){
         memberRepository.saveMember(member);
         return member;
+    }
+
+    @Transactional
+    public Member login(LoginInfo loginInfo) throws InquiryException {
+        return memberRepository.findByEmail(loginInfo.getEmail());
     }
 
 }
