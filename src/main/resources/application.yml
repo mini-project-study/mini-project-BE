@@ -30,8 +30,8 @@ spring:
     refresh-token-validity-in-seconds: 60
 
   redis:
-    host: 127.0.0.1 #184.72.42.251
-    #password: myredis
+    host: 184.72.42.251 # 127.0.0.1
+    password: myredis
     port: 6379
     lettuce: #jedis : 별도 의존성 필요 / lettuce : 별도 설정 필요 없음, 비동기로 요청을 처리(Netty)
       pool:
