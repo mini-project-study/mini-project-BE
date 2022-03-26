@@ -14,6 +14,7 @@ public enum ErrorCode {
     TOKEN_UNSUPPORTED_JWT(401, "지원하지 않는 토큰"),
     TOKEN_ILLEGAL_JWT(401, "JWT 토큰이 잘못됨"),
     TOKEN_NOT_FOUND(401, "토큰이 없음"),
+    TOKEN_IN_BLACKLIST(401, "이미 로그아웃 한 토큰"),
     LOGIN_INFO_NOT_FOUND(400, "유저 정보 없음");
 
     private int statusCode;

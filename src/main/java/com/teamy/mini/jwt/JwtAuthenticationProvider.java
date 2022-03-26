@@ -1,7 +1,9 @@
 package com.teamy.mini.jwt;
 
 import com.teamy.mini.error.ErrorCode;
+import com.teamy.mini.service.RedisTestService;
 import io.jsonwebtoken.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletRequest;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
@@ -29,16 +32,32 @@ public class JwtAuthenticationProvider {
     private final Long accessTokenValidate;
     private final Long refreshTokenValidate;
     private static final String AUTHORITIES_KEY = "auth";
+    private final RedisTestService redisTestService;
 
     public JwtAuthenticationProvider(/*@Value("${jwt.secret}") String secret,*/
                             /*@Value("${jwt.access-token-validity-in-seconds}") Long accessTokenValidate,
                             @Value("${jwt.refresh-token-validity-in-seconds}") Long refreshTokenValidate*/
-    @Value("86400") Long accessTokenValidate, @Value("1209600") Long refreshTokenValidate) {
+    @Value("86400") Long accessTokenValidate, @Value("1209600") Long refreshTokenValidate, RedisTestService redisTestService) {
         //this.secret = secret;
         this.accessTokenValidate = accessTokenValidate;
         this.refreshTokenValidate = refreshTokenValidate;
+        this.redisTestService = redisTestService;
     }
 
+    public long getTokenExpire(String token){
+        Claims claims = Jwts
+                .parser().setSigningKey(secret)
+                .parseClaimsJws(token)
+                .getBody();
+
+        //log.info("claims exp : " + claims.get("exp").toString());
+        Date expiration = claims.get("exp", Date.class);
+        //log.info("claims exp Date : " + expiration);
+        Date today = new Date();
+        //log.info("today : " + today);
+
+        return expiration.getTime() - today.getTime();
+    }
     public String createAccessToken(Authentication authentication) {
         log.info("토큰 생성");
         
@@ -84,6 +103,11 @@ public class JwtAuthenticationProvider {
     }
 
     public boolean validateToken(String token, ServletRequest request) {
+        if(redisTestService.getRedisStringValue(token) != null){
+            // 로그아웃 된 토큰이 들어옴.
+            request.setAttribute("Exception", ErrorCode.TOKEN_IN_BLACKLIST);
+            return false;
+        }
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;

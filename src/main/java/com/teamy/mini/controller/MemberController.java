@@ -7,9 +7,12 @@ import com.teamy.mini.jwt.JwtFilter;
 import com.teamy.mini.jwt.JwtAuthenticationProvider;
 import com.teamy.mini.security.MemberAccount;
 import com.teamy.mini.service.MemberService;
+import com.teamy.mini.service.RedisTestService;
+import io.jsonwebtoken.Jwts;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,20 +28,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
+@RequiredArgsConstructor
 @RestController
 public class MemberController {
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-    private MemberService memberService;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final MemberService memberService;
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
-
-    public MemberController(BCryptPasswordEncoder bCryptPasswordEncoder, MemberService memberService, JwtAuthenticationProvider jwtAuthenticationProvider, AuthenticationManagerBuilder authenticationManagerBuilder){
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.jwtAuthenticationProvider = jwtAuthenticationProvider;
-        this.authenticationManagerBuilder = authenticationManagerBuilder;
-        this.memberService = memberService;
-    }
+    private final RedisTestService redisTestService;
 
     @Operation(summary = "test hello", description = "hello api example")
     @ApiResponses({
@@ -59,27 +57,16 @@ public class MemberController {
             @ApiResponse(responseCode = "404", description = "페이지 없다"),
             @ApiResponse(responseCode = "500", description = "서버가 뭔가 잘못했다")
     })
-    @PostMapping("join")
-    public ResponseEntity<String> test(@RequestParam String email, @RequestParam String nickname, @RequestParam String password) {
+    @PostMapping("users")
+    public ResponseEntity<String> memberRegister(@RequestParam String email, @RequestParam String nickname, @RequestParam String password) {
         String encodedPassword = bCryptPasswordEncoder.encode(password);
         Member member = new Member(email, nickname, encodedPassword);
         memberService.registerMember(member);
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
-    @PostMapping("/login")
+    @PostMapping("auth/login")
     public ResponseEntity<ResponseMessage> authorize(@RequestBody LoginInfo loginInfo) {
-
-//        try{
-//            Member member = memberService.login(loginInfo);
-//        } catch (InquiryException e2) {
-//            return new ResponseEntity<>(
-//                    new ResponseMessage(false, "아이디 혹은 비밀번호를 확인해주세요.", "유저 정보 조회 결과 없음", null)
-//                    , HttpStatus.BAD_REQUEST);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginInfo.getEmail(), loginInfo.getPassword());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -103,4 +90,15 @@ public class MemberController {
 
     }
 
+    @PostMapping("auth/logout")
+    public ResponseEntity<ResponseMessage> logout(@RequestHeader Map<String, Object> requestHeader){
+
+        log.info("양다예 바보: " + requestHeader.toString());
+        log.info("양다예 천보: " + requestHeader.get("authorization"));
+        //log.info("token : " + headers.get("token").toString());
+        String token = (String) requestHeader.get("authorization");
+
+        redisTestService.setLogoutToken(token, jwtAuthenticationProvider.getTokenExpire(token));
+        return new ResponseEntity<>(new ResponseMessage(true, "로그아웃 성공", "", null), HttpStatus.OK);
+    }
 }
