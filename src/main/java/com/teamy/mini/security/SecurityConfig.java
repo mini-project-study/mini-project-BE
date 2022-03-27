@@ -1,5 +1,6 @@
 package com.teamy.mini.security;
 
+
 import com.teamy.mini.jwt.JwtAccessDeniedHandler;
 import com.teamy.mini.jwt.JwtAuthenticationEntryPoint;
 import com.teamy.mini.jwt.JwtAuthenticationProvider;
@@ -17,7 +18,6 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
-
 
 @Configuration
 @RequiredArgsConstructor
