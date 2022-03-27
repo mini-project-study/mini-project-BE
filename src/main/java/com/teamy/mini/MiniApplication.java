@@ -26,4 +26,6 @@ public class MiniApplication extends SpringBootServletInitializer {
 		return new BCryptPasswordEncoder();
 	}
 
+
+
 }
