@@ -1,6 +1,7 @@
 package com.teamy.mini.repository;
 
 import com.teamy.mini.domain.Member;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -9,15 +10,11 @@ import javax.persistence.EntityManager;
 import javax.transaction.Transactional;
 
 @Slf4j
-@Transactional //양 추가
+@RequiredArgsConstructor
+@Transactional
 @Repository
 public class MemberRepository {
-    private EntityManager em;
-
-    @Autowired
-    public MemberRepository(EntityManager em) {
-        this.em = em;
-    }
+    private final EntityManager em;
 
     // 회원 저장
     public void saveMember(Member member) {

@@ -38,6 +38,7 @@ public class MemberController {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final RedisTestService redisTestService;
 
+
     @Operation(summary = "test hello", description = "hello api example")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK !!"),
@@ -69,6 +70,7 @@ public class MemberController {
     public ResponseEntity<ResponseMessage> authorize(@RequestBody LoginInfo loginInfo) {
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginInfo.getEmail(), loginInfo.getPassword());
+        log.info("엉엉 " + authenticationToken.getName());
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         // token에 문제 있거나 아이디/비번 틀려서 로그인에 문제 있으면 여기로 넘어오지 않고 바로 jwtAuthenticationEntryPoint 로 넘어감
@@ -93,8 +95,6 @@ public class MemberController {
     @PostMapping("auth/logout")
     public ResponseEntity<ResponseMessage> logout(@RequestHeader Map<String, Object> requestHeader){
 
-        log.info("양다예 바보: " + requestHeader.toString());
-        log.info("양다예 천보: " + requestHeader.get("authorization"));
         //log.info("token : " + headers.get("token").toString());
         String token = (String) requestHeader.get("authorization");
 

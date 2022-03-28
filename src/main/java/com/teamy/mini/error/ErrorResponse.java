@@ -15,11 +15,16 @@ public class ErrorResponse {
     private String message;
     private int statusCode;
     private List<FieldError> errors = new ArrayList<>();
-
+    private StackTraceElement[] stackTrace;
 
     public ErrorResponse(ErrorCode code) {
         this.message = code.getMessage();
         this.statusCode = code.getStatusCode();
+    }
+    public ErrorResponse(ErrorCode code, StackTraceElement[] stackTrace) {
+        this.message = code.getMessage();
+        this.statusCode = code.getStatusCode();
+        this.stackTrace = stackTrace;
     }
 
 

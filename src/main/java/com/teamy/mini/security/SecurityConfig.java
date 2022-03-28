@@ -1,6 +1,5 @@
 package com.teamy.mini.security;
 
-
 import com.teamy.mini.jwt.JwtAccessDeniedHandler;
 import com.teamy.mini.jwt.JwtAuthenticationEntryPoint;
 import com.teamy.mini.jwt.JwtAuthenticationProvider;
@@ -18,6 +17,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+
 
 @Configuration
 @RequiredArgsConstructor
@@ -83,8 +83,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeHttpRequests()
                 //.antMatchers("/login", "/join", "/hello").permitAll();
-                .antMatchers("/login", "/join").permitAll()
-                .antMatchers("/hello").authenticated(); //로그인한 사용자만 들어갈 수 있게
+                .antMatchers("/login", "/users", "/articles").permitAll()
+                .antMatchers("/hello", "/article", "/articles/**").authenticated(); //로그인한 사용자만 들어갈 수 있게
     }
 
     @Bean

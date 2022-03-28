@@ -14,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletRequest;
 import java.time.LocalDateTime;
@@ -103,11 +104,17 @@ public class JwtAuthenticationProvider {
     }
 
     public boolean validateToken(String token, ServletRequest request) {
+        log.info("token 이 널이 아니라니 : {}", token );
+        if (token == null || !StringUtils.hasText(token)) {
+            request.setAttribute("Exception", ErrorCode.TOKEN_NOT_FOUND);
+            return false;
+        }
         if(redisTestService.getRedisStringValue(token) != null){
             // 로그아웃 된 토큰이 들어옴.
             request.setAttribute("Exception", ErrorCode.TOKEN_IN_BLACKLIST);
             return false;
         }
+
         try {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
