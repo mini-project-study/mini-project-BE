@@ -33,26 +33,39 @@ public class JwtFilter extends GenericFilterBean {
 
         log.info("httpServletRequest header : {}", httpServletRequest.getHeader(AUTHORIZTION_HADER));
         log.info("jwt : {}", jwt);
-        if(StringUtils.hasText(jwt) && jwtAuthenticationProvider.validateToken(jwt, servletRequest)) {
-            Authentication authentication = jwtAuthenticationProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            log.info("인증 ㅇㅇ SecurityContextHolder에 {} 인증 정보 저장, URI : {}", authentication.getName(), requestURI);
-        } else {
-            
-            log.info("유효한 토큰 ㄴㄴ, URI : {}", requestURI);
+//        if(StringUtils.hasText(jwt) && jwtAuthenticationProvider.validateToken(jwt, servletRequest)) {
+//            Authentication authentication = jwtAuthenticationProvider.getAuthentication(jwt);
+//            SecurityContextHolder.getContext().setAuthentication(authentication);
+//            log.info("인증 ㅇㅇ SecurityContextHolder에 {} 인증 정보 저장, URI : {}", authentication.getName(), requestURI);
+//        } else {
+//
+//            log.info("유효한 토큰 ㄴㄴ, URI : {}", requestURI);
+//            if(jwt == null){
+//                log.info("jwt없당");
+//            }
+//        }
+
+            if (jwtAuthenticationProvider.validateToken(jwt, servletRequest)) {
+                Authentication authentication = jwtAuthenticationProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.info("인증 ㅇㅇ SecurityContextHolder에 {} 인증 정보 저장, URI : {}", authentication.getName(), requestURI);
+            } else {
+
+                log.info("유효한 토큰 ㄴㄴ, URI : {}", requestURI);
+                if (jwt == null) {
+                    log.info("jwt없당");
+                }
+            }
+
+            filterChain.doFilter(servletRequest, servletResponse);
         }
 
+        private String resolveToken (HttpServletRequest request){
+            String bearerToken = request.getHeader(AUTHORIZTION_HADER);
+            if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+                return bearerToken.substring(7);
+            }
 
-
-        filterChain.doFilter(servletRequest, servletResponse);
-    }
-
-    private String resolveToken(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZTION_HADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+            return null;
         }
-
-        return null;
     }
-}

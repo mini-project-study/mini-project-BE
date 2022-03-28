@@ -2,6 +2,7 @@ package com.teamy.mini.domain;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.time.Instant;
@@ -16,9 +17,8 @@ public class Article {
     @Column(name = "id", nullable = false)
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member memberId;
+    @Column(name = "member_id", nullable = false)
+    private int memberId;
 
     @Column(name = "nickname", nullable = false, length = 45)
     private String nickname;
@@ -30,11 +30,12 @@ public class Article {
     private String content;
 
     @ManyToOne
-    @JoinColumn(name = "file_id", nullable = false)
+    @JoinColumn(name = "file_id")
     private File fileId;
 
-    @Column(name = "date_time", nullable = false)
-    private Instant dateTime; //Date는 로컬 컴퓨터의 현재 날짜와 시간을 기준으로, Instant는 협정세계시(UTC)를 기준
+    @Column(name = "date_time")
+    @CreationTimestamp
+    private Instant dateTime; //Date : 로컬 컴퓨터의 현재 날짜 및 시간 기준, Instant : 협정세계시(UTC) 기준
 
 }
 
