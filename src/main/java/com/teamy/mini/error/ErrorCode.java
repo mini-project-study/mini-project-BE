@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum ErrorCode {
 
     INVALID_INPUT_VALUE(400,"Invalid Input Value"),
+    PROPERTY_NULL(400, "null인 property가 있음"),
     INQUIRY_NO_RESULT(400,"There is No inquiry result"),
     METHOD_NOT_ALLOWED(405,  "Method Not Allowed"),
     HANDLE_ACCESS_DENIED(403, "Access is Denied"),

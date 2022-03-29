@@ -82,9 +82,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http.authorizeHttpRequests()
-                //.antMatchers("/**", "/images/**").permitAll();
-                .antMatchers("/login", "/users", "/articles").permitAll()
-                .antMatchers("/hello", "/article", "/articles/**", "/profile/**").authenticated(); //로그인한 사용자만 들어갈 수 있게
+                //.antMatchers("/login", "/join", "/hello").permitAll();
+                .antMatchers("/auth/login", "/users", "/articles").permitAll() // authenticated()에 추가 필요
+                .antMatchers("/auth/logout", "/hello", "/article", "/articles/**", "/profile/**").authenticated(); //로그인한 사용자만 들어갈 수 있게
     }
 
     @Bean

@@ -1,5 +1,6 @@
 package com.teamy.mini.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,6 +12,7 @@ import java.time.Instant;
 @Getter
 @Table(name = "article")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Article {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,6 +39,18 @@ public class Article {
     @CreationTimestamp
     private Instant dateTime; //Date : 로컬 컴퓨터의 현재 날짜 및 시간 기준, Instant : 협정세계시(UTC) 기준
 
+    //update 하려구
+//    public void setTitle(String title) {
+//        this.title = title;
+//    }
+//
+//    public void setContent(String content) {
+//        this.content = content;
+//    }
+//
+//    public void setFileId(File fileId) {
+//        this.fileId = fileId;
+//    }
 }
 
 
