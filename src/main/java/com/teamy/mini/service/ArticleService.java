@@ -5,6 +5,9 @@ import com.teamy.mini.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Map;
+
 @RequiredArgsConstructor
 @Service
 public class ArticleService {
@@ -13,5 +16,9 @@ public class ArticleService {
 
     public void registerArticle(Article article) {
         articleRepository.saveArticle(article);
+    }
+
+    public List<Map<String, String>> retrieveArticleList() {
+        return articleRepository.findArticleList();
     }
 }

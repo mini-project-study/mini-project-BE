@@ -22,4 +22,5 @@ public class ResponseMessage {
         this.error = error;
         this.data = data;
     }
+
 }

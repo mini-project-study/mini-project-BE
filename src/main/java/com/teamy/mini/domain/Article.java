@@ -1,5 +1,6 @@
 package com.teamy.mini.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,6 +12,7 @@ import java.time.Instant;
 @Getter
 @Table(name = "article")
 @NoArgsConstructor
+@AllArgsConstructor
 public class Article {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

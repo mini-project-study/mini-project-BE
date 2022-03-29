@@ -35,10 +35,11 @@ public class JwtAuthenticationProvider {
     private static final String AUTHORITIES_KEY = "auth";
     private final RedisTestService redisTestService;
 
+    //단위 : 밀리초 - 300000 (5분으로 늘림)
     public JwtAuthenticationProvider(/*@Value("${jwt.secret}") String secret,*/
                             /*@Value("${jwt.access-token-validity-in-seconds}") Long accessTokenValidate,
                             @Value("${jwt.refresh-token-validity-in-seconds}") Long refreshTokenValidate*/
-    @Value("86400") Long accessTokenValidate, @Value("1209600") Long refreshTokenValidate, RedisTestService redisTestService) {
+    @Value("300000") Long accessTokenValidate, @Value("1209600") Long refreshTokenValidate, RedisTestService redisTestService) {
         //this.secret = secret;
         this.accessTokenValidate = accessTokenValidate;
         this.refreshTokenValidate = refreshTokenValidate;
@@ -51,11 +52,8 @@ public class JwtAuthenticationProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        //log.info("claims exp : " + claims.get("exp").toString());
         Date expiration = claims.get("exp", Date.class);
-        //log.info("claims exp Date : " + expiration);
         Date today = new Date();
-        //log.info("today : " + today);
 
         return expiration.getTime() - today.getTime();
     }
