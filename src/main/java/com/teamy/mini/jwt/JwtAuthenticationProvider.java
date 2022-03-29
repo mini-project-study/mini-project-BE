@@ -3,21 +3,17 @@ package com.teamy.mini.jwt;
 import com.teamy.mini.error.ErrorCode;
 import com.teamy.mini.service.RedisTestService;
 import io.jsonwebtoken.*;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletRequest;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
@@ -35,10 +31,11 @@ public class JwtAuthenticationProvider {
     private static final String AUTHORITIES_KEY = "auth";
     private final RedisTestService redisTestService;
 
+    //단위 : 밀리초 - 300000 (5분으로 늘림)
     public JwtAuthenticationProvider(/*@Value("${jwt.secret}") String secret,*/
                             /*@Value("${jwt.access-token-validity-in-seconds}") Long accessTokenValidate,
                             @Value("${jwt.refresh-token-validity-in-seconds}") Long refreshTokenValidate*/
-    @Value("86400") Long accessTokenValidate, @Value("1209600") Long refreshTokenValidate, RedisTestService redisTestService) {
+    @Value("300000") Long accessTokenValidate, @Value("1209600") Long refreshTokenValidate, RedisTestService redisTestService) {
         //this.secret = secret;
         this.accessTokenValidate = accessTokenValidate;
         this.refreshTokenValidate = refreshTokenValidate;
@@ -51,11 +48,8 @@ public class JwtAuthenticationProvider {
                 .parseClaimsJws(token)
                 .getBody();
 
-        //log.info("claims exp : " + claims.get("exp").toString());
         Date expiration = claims.get("exp", Date.class);
-        //log.info("claims exp Date : " + expiration);
         Date today = new Date();
-        //log.info("today : " + today);
 
         return expiration.getTime() - today.getTime();
     }

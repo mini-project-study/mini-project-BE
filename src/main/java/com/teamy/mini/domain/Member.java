@@ -8,7 +8,8 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-@Setter //양 추가
+@Setter
+@Table(name = "member")
 @NoArgsConstructor
 public class Member {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
