@@ -32,4 +32,17 @@ public class MemberRepository {
 
         return member;
     }
+
+    public Member findById(int memberId){
+        return em.find(Member.class, memberId);
+    }
+    public Member updateNickname(int memberId, String nickname) {
+
+        em.createQuery("UPDATE Member M SET M.nickname = :nickname WHERE M.id = :memberId")
+                .setParameter("nickname", nickname)
+                .setParameter("memberId", memberId)
+                .executeUpdate();
+
+        return findById(memberId);
+    }
 }

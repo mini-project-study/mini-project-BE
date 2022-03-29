@@ -63,6 +63,7 @@ public class MemberController {
         String encodedPassword = bCryptPasswordEncoder.encode(password);
         Member member = new Member(email, nickname, encodedPassword);
         memberService.registerMember(member);
+
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
@@ -101,4 +102,6 @@ public class MemberController {
         redisTestService.setLogoutToken(token, jwtAuthenticationProvider.getTokenExpire(token));
         return new ResponseEntity<>(new ResponseMessage(true, "로그아웃 성공", "", null), HttpStatus.OK);
     }
+
+
 }
