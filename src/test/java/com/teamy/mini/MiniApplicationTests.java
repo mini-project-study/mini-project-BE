@@ -25,8 +25,7 @@ class MiniApplicationTests {
 
 		log.info("publicKey: {}", Base64.encodeBase64String(keyPair.getPublic().getEncoded()));
 		log.info("privateKey: {}", Base64.encodeBase64String(keyPair.getPrivate().getEncoded()));
-
-
 	}
+
 
 }

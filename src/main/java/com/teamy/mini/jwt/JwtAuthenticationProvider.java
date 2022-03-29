@@ -1,23 +1,22 @@
 package com.teamy.mini.jwt;
 
+import com.teamy.mini.domain.Member;
 import com.teamy.mini.error.ErrorCode;
+import com.teamy.mini.repository.MemberRepository;
+import com.teamy.mini.security.MemberAccount;
 import com.teamy.mini.service.RedisTestService;
 import io.jsonwebtoken.*;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import javax.servlet.ServletRequest;
-import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Date;
@@ -34,15 +33,18 @@ public class JwtAuthenticationProvider {
     private final Long refreshTokenValidate;
     private static final String AUTHORITIES_KEY = "auth";
     private final RedisTestService redisTestService;
+    private final MemberRepository memberRepository;
 
     public JwtAuthenticationProvider(/*@Value("${jwt.secret}") String secret,*/
                             /*@Value("${jwt.access-token-validity-in-seconds}") Long accessTokenValidate,
                             @Value("${jwt.refresh-token-validity-in-seconds}") Long refreshTokenValidate*/
-    @Value("86400") Long accessTokenValidate, @Value("1209600") Long refreshTokenValidate, RedisTestService redisTestService) {
+            @Value("86400") Long accessTokenValidate, @Value("1209600") Long refreshTokenValidate, RedisTestService redisTestService, MemberRepository memberRepository) {
         //this.secret = secret;
         this.accessTokenValidate = accessTokenValidate;
         this.refreshTokenValidate = refreshTokenValidate;
         this.redisTestService = redisTestService;
+
+        this.memberRepository = memberRepository;
     }
 
     public long getTokenExpire(String token){
@@ -97,8 +99,14 @@ public class JwtAuthenticationProvider {
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
-        User principal = new User(claims.getSubject(), "", authorities);
+        //User principal = new User(claims.getSubject(), "", authorities);
+        //log.info("claims getSubject : " + claims.getSubject()); // email이 들어있음
+        // 예나 : 다른데서 멤버 id 꺼내 쓰기 위해 MemberAccount로 저장
+        Member member = memberRepository.findByEmail(claims.getSubject());
+        MemberAccount principal = new MemberAccount(member, authorities);
 
+        // 이건 안됨
+        // MemberAccount principal = (MemberAccount) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         log.info("token 조회 pringcipal : {}, token : {}, authoritied : {} ", principal, token, authorities);
         return new UsernamePasswordAuthenticationToken(principal, token, authorities);
     }
