@@ -19,29 +19,29 @@ public class FileManager {
 
     // 저장 경로 폴더가 없으면 폴더 생성
     public void init() {
-        try{
+        try {
             Files.createDirectories(Paths.get(uploadPath));
-        } catch(IOException e) {
+        } catch (IOException e) {
             throw new RuntimeException("Could not create upload folder!");
         }
     }
 
     public File uploadFile(MultipartFile multipartFile) {
-        if(multipartFile.isEmpty()) {
+        if (multipartFile.isEmpty()) {
             throw new RuntimeException("file is empty");
         }
 
         Path root = Paths.get(uploadPath);
 
 
-        if(!Files.exists(root))
+        if (!Files.exists(root))
             init();
 
         String originalFileName = multipartFile.getOriginalFilename();
         String extension = extract(originalFileName);
         String systemFileName = createSystemFileName(originalFileName, extension);
 
-        try{
+        try {
             String path = root.toAbsolutePath() + "\\" + systemFileName;
             log.info("파일 올리는 경로 : " + path);
             multipartFile.transferTo(new java.io.File(path));
@@ -52,6 +52,21 @@ public class FileManager {
         return new File(originalFileName, systemFileName, extension, multipartFile.getSize());
     }
 
+
+    public boolean deleteFile(String systemFileName) {
+
+        Path root = Paths.get(uploadPath);
+        //현재 게시판에 존재하는 파일객체를 만듬
+        java.io.File file = new java.io.File(root.toAbsolutePath() + "\\" + systemFileName);
+        // 파일이 존재하면
+        if (file.exists()) {
+            // 파일 삭제
+            file.delete();
+            return true;
+        }
+
+        return false;
+    }
 
     private String createSystemFileName(String originalFileName, String extension) {
         return UUID.randomUUID().toString() + "." + extension;
