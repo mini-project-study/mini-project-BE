@@ -10,12 +10,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 @ComponentScan(basePackages = "com.teamy")
-public class MiniApplication extends SpringBootServletInitializer {
+public class MiniApplication /*extends SpringBootServletInitializer*/ {
 
-	@Override
+	/*@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
 		return builder.sources(MiniApplication.class);
-	}
+	}*/
 
 	public static void main(String[] args) {
 		SpringApplication.run(MiniApplication.class, args);

@@ -58,17 +58,17 @@ public class ArticleController {
         return new ResponseEntity<>(new ResponseMessage(true, "게시글 전체 목록 조회", "", map), HttpStatus.OK);
     }
 
-    @GetMapping("/profile/{memberId}")
-    public ResponseEntity<ResponseMessage> test(@PathVariable("memberId") int memberId) {
-        Map<String, Object> map = new HashMap<>();
-        List<Map<String, String>> articleList = articleRepository.findArticleListByMemberId(memberId);
-
-        map.put("currentPage", 0);
-        map.put("totalPage", articleList.size());
-        map.put("articleList", articleList);
-
-        return new ResponseEntity<>(new ResponseMessage(true, "회원별 게시글 목록 조회", "", map), HttpStatus.OK);
-    }
+//    @GetMapping("/profile/{memberId}")
+//    public ResponseEntity<ResponseMessage> test(@PathVariable("memberId") int memberId) {
+//        Map<String, Object> map = new HashMap<>();
+//        List<Map<String, String>> articleList = articleRepository.findArticleListByMemberId(memberId);
+//
+//        map.put("currentPage", 0);
+//        map.put("totalPage", articleList.size());
+//        map.put("articleList", articleList);
+//
+//        return new ResponseEntity<>(new ResponseMessage(true, "회원별 게시글 목록 조회", "", map), HttpStatus.OK);
+//    }
 
     //게시글 수정
     @PutMapping("/articles/{articleId}")

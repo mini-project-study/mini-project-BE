@@ -12,7 +12,7 @@
 	<artifactId>mini</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>mini</name>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>11</java.version>
@@ -98,12 +98,6 @@
 			<version>2.6.3</version>
 		</dependency>
 
-
-		<dependency>
-			<groupId>io.springfox</groupId>
-			<artifactId>springfox-boot-starter</artifactId>
-			<version>3.0.0</version>
-		</dependency>
         <!-- https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter -->
         <dependency>
             <groupId>io.springfox</groupId>
