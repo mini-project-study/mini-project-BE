@@ -20,15 +20,15 @@ public class MiniExceptionHandler {
         return new ResponseEntity<ResponseMessage>(new ResponseMessage(false, ErrorCode.SQL_ERROR.getMessage(), ErrorCode.SQL_ERROR.getMessage(), null), HttpStatus.valueOf(ErrorCode.SQL_ERROR.getStatusCode()));
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ResponseMessage> handleIllegalArgumentException(IllegalArgumentException e) {
-        return new ResponseEntity<>(new ResponseMessage(false, ErrorCode.INVALID_INPUT_VALUE.getMessage(), ErrorCode.INVALID_INPUT_VALUE.getMessage(), null), HttpStatus.valueOf(ErrorCode.INVALID_INPUT_VALUE.getStatusCode()));
-    }
-
-    @ExceptionHandler(NullPointerException.class)
-    public ResponseEntity<ResponseMessage> NullPointerException(NullPointerException e) {
-        return new ResponseEntity<>(new ResponseMessage(false, ErrorCode.INVALID_INPUT_VALUE.getMessage(), ErrorCode.INVALID_INPUT_VALUE.getMessage(), null), HttpStatus.valueOf(ErrorCode.INVALID_INPUT_VALUE.getStatusCode()));
-    }
+//    @ExceptionHandler(IllegalArgumentException.class)
+//    public ResponseEntity<ResponseMessage> handleIllegalArgumentException(IllegalArgumentException e) {
+//        return new ResponseEntity<>(new ResponseMessage(false, ErrorCode.INVALID_INPUT_VALUE.getMessage(), ErrorCode.INVALID_INPUT_VALUE.getMessage(), null), HttpStatus.valueOf(ErrorCode.INVALID_INPUT_VALUE.getStatusCode()));
+//    }
+//
+//    @ExceptionHandler(NullPointerException.class)
+//    public ResponseEntity<ResponseMessage> NullPointerException(NullPointerException e) {
+//        return new ResponseEntity<>(new ResponseMessage(false, ErrorCode.INVALID_INPUT_VALUE.getMessage(), ErrorCode.INVALID_INPUT_VALUE.getMessage(), null), HttpStatus.valueOf(ErrorCode.INVALID_INPUT_VALUE.getStatusCode()));
+//    }
 
     @ExceptionHandler(PropertyValueException.class)
     public ResponseEntity<ResponseMessage> NullPointerException(PropertyValueException e) {
