@@ -39,7 +39,7 @@ public class JwtAuthenticationProvider {
     public JwtAuthenticationProvider(/*@Value("${jwt.secret}") String secret,*/
                             /*@Value("${jwt.access-token-validity-in-seconds}") Long accessTokenValidate,
                             @Value("${jwt.refresh-token-validity-in-seconds}") Long refreshTokenValidate*/
-            @Value("86400") Long accessTokenValidate, @Value("1209600") Long refreshTokenValidate, RedisTestService redisTestService, MemberRepository memberRepository) {
+            @Value("300000") Long accessTokenValidate, @Value("1209600") Long refreshTokenValidate, RedisTestService redisTestService, MemberRepository memberRepository) {
         //this.secret = secret;
         this.accessTokenValidate = accessTokenValidate;
         this.refreshTokenValidate = refreshTokenValidate;
@@ -49,6 +49,7 @@ public class JwtAuthenticationProvider {
     }
 
     public long getTokenExpire(String token){
+        token = token.substring(7);
         Claims claims = Jwts
                 .parser().setSigningKey(secret)
                 .parseClaimsJws(token)

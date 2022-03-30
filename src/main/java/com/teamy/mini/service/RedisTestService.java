@@ -17,6 +17,7 @@ public class RedisTestService {
     private final StringRedisTemplate stringRedisTemplate;
 
     public void setLogoutToken(String key, long expire) {
+        key = key.substring(7);
         stringRedisTemplate.opsForValue().set(key, "logout");
         stringRedisTemplate.expire(key, expire, TimeUnit.MILLISECONDS);
     }
