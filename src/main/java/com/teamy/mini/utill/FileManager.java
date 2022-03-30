@@ -1,0 +1,64 @@
+package com.teamy.mini.utill;
+
+import com.teamy.mini.domain.File;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.UUID;
+
+@Slf4j
+@Component
+public class FileManager {
+
+    private String uploadPath = "/upload/";
+
+    // 저장 경로 폴더가 없으면 폴더 생성
+    public void init() {
+        try{
+            Files.createDirectories(Paths.get(uploadPath));
+        } catch(IOException e) {
+            throw new RuntimeException("Could not create upload folder!");
+        }
+    }
+
+    public File uploadFile(MultipartFile multipartFile) {
+        if(multipartFile.isEmpty()) {
+            throw new RuntimeException("file is empty");
+        }
+
+        Path root = Paths.get(uploadPath);
+
+
+        if(!Files.exists(root))
+            init();
+
+        String originalFileName = multipartFile.getOriginalFilename();
+        String extension = extract(originalFileName);
+        String systemFileName = createSystemFileName(originalFileName, extension);
+
+        try{
+            String path = root.toAbsolutePath() + "\\" + systemFileName;
+            log.info("파일 올리는 경로 : " + path);
+            multipartFile.transferTo(new java.io.File(path));
+        } catch (IOException e) {
+            throw new RuntimeException("file transfer fail");
+        }
+
+        return new File(originalFileName, systemFileName, extension, multipartFile.getSize());
+    }
+
+
+    private String createSystemFileName(String originalFileName, String extension) {
+        return UUID.randomUUID().toString() + "." + extension;
+    }
+
+    private String extract(String originalFileName) {
+        return originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+    }
+
+}
