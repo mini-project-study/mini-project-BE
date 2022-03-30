@@ -3,7 +3,9 @@ package com.teamy.mini.controller;
 import com.teamy.mini.domain.File;
 import com.teamy.mini.domain.Profile;
 import com.teamy.mini.domain.ResponseMessage;
+import com.teamy.mini.repository.ArticleRepository;
 import com.teamy.mini.security.MemberAccount;
+import com.teamy.mini.service.ArticleService;
 import com.teamy.mini.service.MemberService;
 import com.teamy.mini.utill.FileManager;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.net.MalformedURLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -27,6 +30,7 @@ import java.util.Map;
 public class ProfileController {
     private final FileManager fileManager;
     private final MemberService memberService;
+    private final ArticleRepository articleRepository;
 
     @PostMapping("filetest")
     public ResponseEntity<String> fileTest(@RequestParam("file") MultipartFile uploadFile) {
@@ -39,8 +43,10 @@ public class ProfileController {
         return new ResponseEntity<>("success", HttpStatus.OK);
     }
 
-    @GetMapping("/profile/{memberId}")
-    public ResponseEntity<ResponseMessage> profileInquiry(@PathVariable int memberId) {
+    @GetMapping("/profile")
+    public ResponseEntity<ResponseMessage> profileInquiry() {
+
+        int memberId = ((MemberAccount) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMember().getId();
 
         Map<String, Object> data = new HashMap<>();
 
@@ -50,7 +56,11 @@ public class ProfileController {
         data.put("introduction", profile.getIntroduction());
 
         // 게시글 조회해서 넣어줘야됨.
+        List<Map<String, String>> articleList = articleRepository.findArticleListByMemberId(memberId);
 
+        data.put("currentPage", 0);
+        data.put("totalPage", articleList.size());
+        data.put("articleList", articleList);
         return new ResponseEntity<ResponseMessage>(new ResponseMessage(true, "프로필 조회 성공", "", data),HttpStatus.OK);
     }
     @PutMapping("/profile/introduction/{introduction}")
@@ -68,7 +78,7 @@ public class ProfileController {
         //log.info(SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString());
         int memberId = ((MemberAccount) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMember().getId();
         Profile profile = memberService.editProfileNickname(memberId, nickname);
-        log.info("영속성 : " + ((MemberAccount) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMember().getNickname());
+        //log.info("영속성 : " + ((MemberAccount) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMember().getNickname());
         Map<String, Object> data = new HashMap<>();
         data.put("nickname", profile.getMember().getNickname());
         return new ResponseEntity<>(new ResponseMessage(true, "닉네임 수정 완료", "", data), HttpStatus.OK);
