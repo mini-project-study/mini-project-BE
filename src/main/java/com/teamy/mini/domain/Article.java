@@ -39,25 +39,11 @@ public class Article {
     @CreationTimestamp
     private Instant dateTime; //Date : 로컬 컴퓨터의 현재 날짜 및 시간 기준, Instant : 협정세계시(UTC) 기준
 
-    //update 하려구
-//    public void setTitle(String title) {
-//        this.title = title;
-//    }
-//
-//    public void setContent(String content) {
-//        this.content = content;
-//    }
-//
-//    public void setFileId(File fileId) {
-//        this.fileId = fileId;
-//    }
+    public Article(int memberId, String nickname, String title, String content, File fileId) {
+        this.memberId = memberId;
+        this.nickname = nickname;
+        this.title = title;
+        this.content = content;
+        this.fileId = fileId;
+    }
 }
-
-
-//`id`        int NOT NULL ,
-// `member_id` int NOT NULL ,
-// `file_id`   int NULL ,
-// `title`     varchar(50) NOT NULL ,
-// `content`   varchar(1000) NULL ,
-// `date_time` datetime NOT NULL ,
-// `nickname`  varchar(45) NOT NULL ,

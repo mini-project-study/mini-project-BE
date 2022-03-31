@@ -35,16 +35,15 @@ public class JwtAuthenticationProvider {
     private final RedisTestService redisTestService;
     private final MemberRepository memberRepository;
 
-    //단위 : 밀리초 - 300000 (5분으로 늘림)
+    //단위 : 밀리초 - 3600000 (1시간으로 늘림)
     public JwtAuthenticationProvider(/*@Value("${jwt.secret}") String secret,*/
                             /*@Value("${jwt.access-token-validity-in-seconds}") Long accessTokenValidate,
                             @Value("${jwt.refresh-token-validity-in-seconds}") Long refreshTokenValidate*/
-            @Value("300000") Long accessTokenValidate, @Value("1209600") Long refreshTokenValidate, RedisTestService redisTestService, MemberRepository memberRepository) {
+            @Value("3600000") Long accessTokenValidate, @Value("7200000") Long refreshTokenValidate, RedisTestService redisTestService, MemberRepository memberRepository) {
         //this.secret = secret;
         this.accessTokenValidate = accessTokenValidate;
         this.refreshTokenValidate = refreshTokenValidate;
         this.redisTestService = redisTestService;
-
         this.memberRepository = memberRepository;
     }
 

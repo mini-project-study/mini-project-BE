@@ -30,10 +30,10 @@ public class MiniExceptionHandler {
 //        return new ResponseEntity<>(new ResponseMessage(false, ErrorCode.INVALID_INPUT_VALUE.getMessage(), ErrorCode.INVALID_INPUT_VALUE.getMessage(), null), HttpStatus.valueOf(ErrorCode.INVALID_INPUT_VALUE.getStatusCode()));
 //    }
 
-    @ExceptionHandler(PropertyValueException.class)
-    public ResponseEntity<ResponseMessage> NullPointerException(PropertyValueException e) {
-        return new ResponseEntity<>(new ResponseMessage(false, ErrorCode.PROPERTY_NULL.getMessage(), ErrorCode.PROPERTY_NULL.getMessage(), null), HttpStatus.valueOf(ErrorCode.PROPERTY_NULL.getStatusCode()));
-    }
+//    @ExceptionHandler(PropertyValueException.class)
+//    public ResponseEntity<ResponseMessage> NullPointerException(PropertyValueException e) {
+//        return new ResponseEntity<>(new ResponseMessage(false, ErrorCode.PROPERTY_NULL.getMessage(), ErrorCode.PROPERTY_NULL.getMessage(), null), HttpStatus.valueOf(ErrorCode.PROPERTY_NULL.getStatusCode()));
+//    }
 
 
 

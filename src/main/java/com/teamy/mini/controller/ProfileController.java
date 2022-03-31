@@ -34,7 +34,7 @@ public class ProfileController {
 
     @PostMapping("filetest")
     public ResponseEntity<String> fileTest(@RequestParam("file") MultipartFile uploadFile) {
-
+        log.info("------- : {} " , uploadFile.getOriginalFilename());
         File file = null;
         if(uploadFile != null) {
             file = fileManager.uploadFile(uploadFile);

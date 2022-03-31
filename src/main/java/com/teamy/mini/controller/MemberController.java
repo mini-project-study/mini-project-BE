@@ -80,6 +80,7 @@ public class MemberController {
         log.info("인증된 사용자 email " + SecurityContextHolder.getContext().getAuthentication().getName());
 
         String nickname = ((MemberAccount) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMember().getNickname();
+        String id = String.valueOf(((MemberAccount) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMember().getId());
         String jwt = jwtAuthenticationProvider.createAccessToken(authentication);
         //log.info("jwt : {} ", jwt);
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -87,6 +88,7 @@ public class MemberController {
 
         Map<String, Object> data = new HashMap<>();
         data.put("nickname", nickname);
+        data.put("id", id);
         data.put("accessToken", jwt);
         data.put("refreshToken", jwt);
         return new ResponseEntity<>(new ResponseMessage(true, "로그인 성공", "", data), httpHeaders, HttpStatus.OK);
@@ -102,6 +104,8 @@ public class MemberController {
         redisTestService.setLogoutToken(token, jwtAuthenticationProvider.getTokenExpire(token));
         return new ResponseEntity<>(new ResponseMessage(true, "로그아웃 성공", "", null), HttpStatus.OK);
     }
+
+    
 
 
 }
