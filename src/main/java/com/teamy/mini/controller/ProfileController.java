@@ -84,10 +84,20 @@ public class ProfileController {
         return new ResponseEntity<>(new ResponseMessage(true, "닉네임 수정 완료", "", data), HttpStatus.OK);
     }
 
+    @PutMapping("/profile/image")
+    public ResponseEntity<ResponseMessage> editImage(@RequestParam MultipartFile multipartFile) {
+        int memberId = ((MemberAccount) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getMember().getId();
+        File file = memberService.editProfileImage(memberId, multipartFile);
+
+        Map<String, Object> data = new HashMap<>();
+        data.put("file", file);
+        return new ResponseEntity<>(new ResponseMessage(true, "프로필 이미지 수정 완료","", data), HttpStatus.OK);
+    }
+
     @ResponseBody
     @GetMapping("/images/{filename}")
     public UrlResource showImage(@PathVariable String filename) throws
             MalformedURLException {
-        return new UrlResource("file:" + "C:\\upload\\" + filename);
+        return new UrlResource("file:" + "\\upload\\" + filename);
     }
 }

@@ -24,5 +24,8 @@ public class FileRepository {
         return em.find(File.class, id);
     }
 
+    public void deleteFile(int fileId) {
+        em.createQuery("DELETE FROM File F WHERE F.id = :id").setParameter("id", fileId).executeUpdate();
+    }
 
 }

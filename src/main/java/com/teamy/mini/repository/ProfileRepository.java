@@ -1,5 +1,6 @@
 package com.teamy.mini.repository;
 
+import com.teamy.mini.domain.File;
 import com.teamy.mini.domain.Profile;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +42,14 @@ public class ProfileRepository {
         return findProfile(memberId);
     }
 
+    public Profile updateProfileImage(int memberId, File file) {
 
+        em.createQuery("UPDATE Profile P SET P.file = :file WHERE P.member.id = :memberId")
+                .setParameter("file", file)
+                .setParameter("memberId", memberId)
+                .executeUpdate();
+
+        return findProfile(memberId);
+    }
 
 }
